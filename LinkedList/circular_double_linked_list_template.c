@@ -10,12 +10,17 @@ typedef struct DataBarang
     int jumlahBarang;
     int hargaAkhir;
     struct DataBarang* next;
+    struct DataBarang* prev;
 } DataBarang;
 
 DataBarang* head = NULL;
-DataBarang* tail = NULL;
 
-void printAllData()
+void printDataForward()
+{
+
+}
+
+void printDataBackward()
 {
 
 }
@@ -68,22 +73,23 @@ void freeAllLinkedList()
 void printMenu()
 {
     system("cls");
-    printf("         .__                     .__                        .__               .__          \n");
-    printf("    ____ |__|______   ____  __ __|  | _____ _______    _____|__| ____    ____ |  |   ____  \n");
-    printf("  _/ ___\\|  \\_  __ \\_/ ___\\|  |  \\  | \\__  \\\\_  __ \\  /  ___/  |/    \\  / ___\\|  | _/ __ \\ \n");
-    printf("  \\  \\___|  ||  | \\/\\  \\___|  |  /  |__/ __ \\|  | \\/  \\___ \\|  |   |  \\/ /_/  >  |_\\  ___/ \n");
-    printf("   \\___  >__||__|    \\___  >____/|____(____  /__|    /____  >__|___|  /\\___  /|____/\\___  >\n");
-    printf("       \\/                \\/                \\/             \\/        \\//_____/           \\/ \n");
-    printf("1. Tampilkan semua data\n");
-    printf("2. Tambah data dari head\n");
-    printf("3. Tambah data dari tail\n");
-    printf("4. Tambah data setelah id tertentu\n");
-    printf("5. Edit data berdasarkan id\n");
-    printf("6. Edit data berdasarkan posisi\n");
-    printf("7. Hapus data berdasarkan id\n");
-    printf("8. Hapus data berdasarkan posisi\n");
-    printf("9. Urutkan data\n");
-    printf("10. Selesai\n");
+    printf("         .__                     .__                     .___          ___.   .__          \n");
+    printf("    ____ |__|______   ____  __ __|  | _____ _______    __| _/____  __ _\\_ |__ |  |   ____  \n");
+    printf("  _/ ___\\|  \\_  __ \\_/ ___\\|  |  \\  | \\__  \\\\_  __ \\  / __ |/  _ \\|  |  \\ __ \\|  | _/ __ \\ \n");
+    printf("  \\  \\___|  ||  | \\/\\  \\___|  |  /  |__/ __ \\|  | \\/ / /_/ (  <_> )  |  / \\_\\ \\  |_\\  ___/ \n");
+    printf("   \\___  >__||__|    \\___  >____/|____(____  /__|    \\____ |\\____/|____/|___  /____/\\___  >\n");
+    printf("       \\/                \\/                \\/             \\/                \\/          \\/  \n");
+    printf("1. Tampilkan semua data dari depan\n");
+    printf("2. Tampilkan semua data dari belakang\n");
+    printf("3. Tambah data dari head\n");
+    printf("4. Tambah data dari tail\n");
+    printf("5. Tambah data setelah id tertentu\n");
+    printf("6. Edit data berdasarkan id\n");
+    printf("7. Edit data berdasarkan posisi\n");
+    printf("8. Hapus data berdasarkan id\n");
+    printf("9. Hapus data berdasarkan posisi\n");
+    printf("10. Urutkan data\n");
+    printf("11. Selesai\n");
     printf("Pilihan anda : ");
 }
 
@@ -97,13 +103,17 @@ int main()
         getchar();
 
         system("cls");
-        if(inputUser > 0 && inputUser <= 10)
+        if(inputUser > 0 && inputUser <= 11)
         {
             if(inputUser == 1)
             {
-                printAllData();
+                printDataForward();
             }
             else if(inputUser == 2)
+            {
+                printDataBackward();
+            }
+            else if(inputUser == 3)
             {
                 int id;
                 char* namaBarang = (char*) malloc(11 * sizeof(char));
@@ -127,7 +137,7 @@ int main()
                 addDataFromStart(id, namaBarang, hargaBarang, jumlahBarang);
                 free(namaBarang);
             }
-            else if(inputUser == 3)
+            else if(inputUser == 4)
             {
                 int id;
                 char* namaBarang = (char*) malloc(11 * sizeof(char));
@@ -151,7 +161,7 @@ int main()
                 addDataFromEnd(id, namaBarang, hargaBarang, jumlahBarang);
                 free(namaBarang);
             }
-            else if(inputUser == 4)
+            else if(inputUser == 5)
             {
                 int indexId;
                 int id;
@@ -179,15 +189,15 @@ int main()
                 addDataFromId(indexId, id, namaBarang, hargaBarang, jumlahBarang);
                 free(namaBarang);
             }
-            else if(inputUser == 5)
+            else if(inputUser == 6)
             {
                 editDataFromId();
             }
-            else if(inputUser == 6)
+            else if(inputUser == 7)
             {
                 editDataFromPosition();
             }
-            else if(inputUser == 7)
+            else if(inputUser == 8)
             {
                 int id;
 
@@ -195,7 +205,7 @@ int main()
                 scanf("%d", &id);
                 deleteFromId(id);
             }
-            else if(inputUser == 8)
+            else if(inputUser == 9)
             {
                 int position;
 
@@ -203,7 +213,7 @@ int main()
                 scanf("%d", &position);
                 deleteFromPosition(position);
             }
-            else if(inputUser == 9)
+            else if(inputUser == 10)
             {
                 int sortOption;
                 do
@@ -215,7 +225,7 @@ int main()
     
                 sortData(sortOption);
             }
-            else if(inputUser == 10)
+            else if(inputUser == 11)
             {
                 freeAllLinkedList();
                 printf("Selesai\n");

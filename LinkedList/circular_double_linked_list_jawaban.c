@@ -10,20 +10,21 @@ typedef struct DataBarang
     int jumlahBarang;
     int hargaAkhir;
     struct DataBarang* next;
+    struct DataBarang* prev;
 } DataBarang;
 
 DataBarang* head = NULL;
-DataBarang* tail = NULL;
 
-void printAllData()
+void printDataForward()
 {
     if(head == NULL)
     {
         printf("Data kosong\n");
         return;
     }
-
+    
     DataBarang* cursor = head;
+
     printf("+----+-------------+--------------+---------------+-------------+\n");
     printf("| Id | Nama Barang | Harga Barang | Jumlah Barang | Harga Akhir |\n");
     printf("+----+-------------+--------------+---------------+-------------+\n");
@@ -35,33 +36,51 @@ void printAllData()
     printf("+----+-------------+--------------+---------------+-------------+\n");
 }
 
-void addDataFromStart(int id, char* namaBarang, int hargaBarang, int jumlahBarang)
+void printDataBackward()
+{
+    if(head == NULL)
+    {
+        printf("Data kosong\n");
+        return;
+    }
+    
+    DataBarang* cursor = head->prev;
+
+    printf("+----+-------------+--------------+---------------+-------------+\n");
+    printf("| Id | Nama Barang | Harga Barang | Jumlah Barang | Harga Akhir |\n");
+    printf("+----+-------------+--------------+---------------+-------------+\n");
+    do
+    {
+        printf("| %-2d | %-11s | %-12d | %-13d | %-11d |\n",cursor->id, cursor->namaBarang, cursor->hargaBarang, cursor->jumlahBarang, cursor->hargaAkhir);
+        cursor = cursor->prev;
+    }while(cursor != head->prev);
+    printf("+----+-------------+--------------+---------------+-------------+\n");
+}
+
+void addDataFromHead(int id, char* namaBarang, int hargaBarang, int jumlahBarang)
 {
     DataBarang* newData = (DataBarang*) malloc(sizeof(DataBarang));
-    newData->namaBarang = (char*) malloc(11* sizeof(char));
+    newData->namaBarang = (char*) malloc(11 * sizeof(char));
     newData->id = id;
     strcpy(newData->namaBarang, namaBarang);
     newData->hargaBarang = hargaBarang;
     newData->jumlahBarang = jumlahBarang;
-    newData->hargaAkhir = hargaBarang * jumlahBarang;
+    newData->hargaAkhir = jumlahBarang * hargaBarang;
     newData->next = NULL;
+    newData->prev = NULL;
 
     if(head == NULL)
     {
         newData->next = newData;
+        newData->prev = newData;
         head = newData;
     }else
     {
-        DataBarang* last = head;
-        
-        do{
-            last = last->next;    
-        }while(last->next != head);
-    
-        last->next = newData;
+        head->prev->next = newData;
+        newData->prev = head->prev;
         newData->next = head;
+        head->prev = newData;
         head = newData;
-    
     }
 
     printf("Data berhasil ditambahkan\n");
@@ -70,28 +89,26 @@ void addDataFromStart(int id, char* namaBarang, int hargaBarang, int jumlahBaran
 void addDataFromEnd(int id, char* namaBarang, int hargaBarang, int jumlahBarang)
 {
     DataBarang* newData = (DataBarang*) malloc(sizeof(DataBarang));
-    newData->namaBarang = (char*) malloc(11* sizeof(char));
+    newData->namaBarang = (char*) malloc(11 * sizeof(char));
     newData->id = id;
     strcpy(newData->namaBarang, namaBarang);
     newData->hargaBarang = hargaBarang;
     newData->jumlahBarang = jumlahBarang;
-    newData->hargaAkhir = hargaBarang * jumlahBarang;
+    newData->hargaAkhir = jumlahBarang * hargaBarang;
     newData->next = NULL;
+    newData->prev = NULL;
 
     if(head == NULL)
     {
         newData->next = newData;
+        newData->prev = newData;
         head = newData;
     }else
     {
-        DataBarang* last = head;
-        
-        do{
-            last = last->next;    
-        }while(last->next != head);
-    
-        last->next = newData;
-        newData->next = head;    
+        head->prev->next = newData;
+        newData->prev = head->prev;
+        newData->next = head;
+        head->prev = newData;
     }
 
     printf("Data berhasil ditambahkan\n");
@@ -105,28 +122,31 @@ void addDataFromId(int indexId, int id, char* namaBarang, int hargaBarang, int j
         return;
     }
 
-    DataBarang* newData = (DataBarang*) malloc(sizeof(DataBarang));
-    newData->namaBarang = (char*) malloc(11* sizeof(char));
-    newData->id = id;
-    strcpy(newData->namaBarang, namaBarang);
-    newData->hargaBarang = hargaBarang;
-    newData->jumlahBarang = jumlahBarang;
-    newData->hargaAkhir = hargaBarang * jumlahBarang;
-    newData->next = NULL;
-
     DataBarang* cursor = head;
+
     do
     {
         cursor = cursor->next;
+
     }while(cursor != head && cursor->id != indexId);
 
     if(cursor->id != indexId)
     {
-        printf("Data tidak ditemukan");
+        printf("Data tidak ditemukan\n");
         return;
     }
 
+    DataBarang* newData = (DataBarang*) malloc(sizeof(DataBarang));
+    newData->namaBarang = (char*) malloc(11 * sizeof(char));
+    newData->id = id;
+    strcpy(newData->namaBarang, namaBarang);
+    newData->hargaBarang = hargaBarang;
+    newData->jumlahBarang = jumlahBarang;
+    newData->hargaAkhir = jumlahBarang * hargaBarang;
     newData->next = cursor->next;
+    newData->prev = cursor;
+
+    cursor->next->prev = newData;
     cursor->next = newData;
 
     printf("Data berhasil ditambahkan\n");
@@ -149,7 +169,7 @@ void editDataFromId()
     do
     {
         cursor = cursor->next;
-    }while(cursor != head && cursor->id != id);
+    }while(cursor->id != id && cursor != head);
 
     if(cursor->id != id)
     {
@@ -175,7 +195,6 @@ void editDataFromId()
     cursor->hargaAkhir = cursor->jumlahBarang * cursor->hargaBarang;
 
     printf("Data berhasil diupdate\n");
-
 }
 
 void editDataFromPosition()
@@ -187,7 +206,6 @@ void editDataFromPosition()
     }
 
     DataBarang* cursor = head;
-
     int position;
     printf("Posisi : ");
     scanf("%d", &position);
@@ -230,30 +248,27 @@ void deleteFromId(int id)
     }
 
     DataBarang* cursor = head;
-    DataBarang* dataBefore = NULL;
-
-    do
-    {
-        dataBefore = cursor;
+    do{
         cursor = cursor->next;
     }while(cursor != head && cursor->id != id);
 
     if(cursor->id != id)
     {
-        printf("Data tidak ditemukan");
+        printf("Data tidak ditemukan\n");
         return;
     }
 
-    if(head == cursor)
+    if(cursor == head)
     {
-        if(head->next == head)
-        {
-            head = NULL;
-        }
-        else head = cursor->next;
+        if(head == head->next) head = NULL;
+        else head = head->next;
     }
 
+    DataBarang* dataBefore = cursor->prev;
     dataBefore->next = cursor->next;
+    cursor->next->prev = dataBefore;
+
+
     free(cursor->namaBarang);
     free(cursor);
 
@@ -269,32 +284,24 @@ void deleteFromPosition(int position)
     }
 
     DataBarang* cursor = head;
-    DataBarang* dataBefore = head;
-
-    do
-    {
-        dataBefore = dataBefore->next;
-    }while(dataBefore->next != head);
 
     if(position <= 0) position = 1;
 
     while(position > 1)
     {
-        dataBefore = cursor;
         cursor = cursor->next;
         position--;
     }
 
     if(cursor == head)
     {
-        if(head->next == head)
-        {
-            head = NULL;
-        }
+        if(head == head->next) head = NULL;
         else head = head->next;
     }
 
+    DataBarang* dataBefore = cursor->prev;
     dataBefore->next = cursor->next;
+    cursor->next->prev = dataBefore;
 
     free(cursor->namaBarang);
     free(cursor);
@@ -312,16 +319,16 @@ void sortData(int sortOption)
 
     DataBarang* cursor;
     DataBarang* last = head;
+    DataBarang* nextData = NULL;
     int swapped;
 
     do
     {
         cursor = head;
         swapped = 0;
-
         while(cursor->next != last)
         {
-            DataBarang* nextData = cursor->next;
+            nextData = cursor->next;
             if((sortOption == 1 && (cursor->id > nextData->id)) || (sortOption == 2 && (strcmp(cursor->namaBarang, nextData->namaBarang) > 0)) || (sortOption == 3 && (cursor->hargaBarang > nextData->hargaBarang)) || (sortOption == 4 && (cursor->jumlahBarang > nextData->jumlahBarang)) || (sortOption == 5 && (cursor->hargaAkhir > nextData->hargaAkhir)))
             {
                 //temp = a
@@ -350,7 +357,7 @@ void sortData(int sortOption)
                 free(temp->namaBarang);
                 free(temp);
 
-                swapped = 1;
+                swapped = 1;   
             }
             cursor = nextData;
         }
@@ -387,28 +394,36 @@ void freeAllLinkedList()
 void printMenu()
 {
     system("cls");
-    printf("         .__                     .__                        .__               .__          \n");
-    printf("    ____ |__|______   ____  __ __|  | _____ _______    _____|__| ____    ____ |  |   ____  \n");
-    printf("  _/ ___\\|  \\_  __ \\_/ ___\\|  |  \\  | \\__  \\\\_  __ \\  /  ___/  |/    \\  / ___\\|  | _/ __ \\ \n");
-    printf("  \\  \\___|  ||  | \\/\\  \\___|  |  /  |__/ __ \\|  | \\/  \\___ \\|  |   |  \\/ /_/  >  |_\\  ___/ \n");
-    printf("   \\___  >__||__|    \\___  >____/|____(____  /__|    /____  >__|___|  /\\___  /|____/\\___  >\n");
-    printf("       \\/                \\/                \\/             \\/        \\//_____/           \\/ \n");
-    printf("1. Tampilkan semua data\n");
-    printf("2. Tambah data dari head\n");
-    printf("3. Tambah data dari tail\n");
-    printf("4. Tambah data setelah id tertentu\n");
-    printf("5. Edit data berdasarkan id\n");
-    printf("6. Edit data berdasarkan posisi\n");
-    printf("7. Hapus data berdasarkan id\n");
-    printf("8. Hapus data berdasarkan posisi\n");
-    printf("9. Urutkan data\n");
-    printf("10. Selesai\n");
+    printf("         .__                     .__                     .___          ___.   .__          \n");
+    printf("    ____ |__|______   ____  __ __|  | _____ _______    __| _/____  __ _\\_ |__ |  |   ____  \n");
+    printf("  _/ ___\\|  \\_  __ \\_/ ___\\|  |  \\  | \\__  \\\\_  __ \\  / __ |/  _ \\|  |  \\ __ \\|  | _/ __ \\ \n");
+    printf("  \\  \\___|  ||  | \\/\\  \\___|  |  /  |__/ __ \\|  | \\/ / /_/ (  <_> )  |  / \\_\\ \\  |_\\  ___/ \n");
+    printf("   \\___  >__||__|    \\___  >____/|____(____  /__|    \\____ |\\____/|____/|___  /____/\\___  >\n");
+    printf("       \\/                \\/                \\/             \\/                \\/          \\/  \n");
+    printf("1. Tampilkan semua data dari depan\n");
+    printf("2. Tampilkan semua data dari belakang\n");
+    printf("3. Tambah data dari head\n");
+    printf("4. Tambah data dari tail\n");
+    printf("5. Tambah data setelah id tertentu\n");
+    printf("6. Edit data berdasarkan id\n");
+    printf("7. Edit data berdasarkan posisi\n");
+    printf("8. Hapus data berdasarkan id\n");
+    printf("9. Hapus data berdasarkan posisi\n");
+    printf("10. Urutkan data\n");
+    printf("11. Selesai\n");
     printf("Pilihan anda : ");
 }
 
 int main()
 {
     int inputUser;
+
+    addDataFromHead(1,"1",1,1);
+    addDataFromHead(2,"2",2,2);
+    addDataFromHead(3,"3",3,3);
+    addDataFromEnd(4,"4",4,4);
+    addDataFromEnd(5,"5",5,5);
+
     do
     {
         printMenu();
@@ -416,13 +431,17 @@ int main()
         getchar();
 
         system("cls");
-        if(inputUser > 0 && inputUser <= 10)
+        if(inputUser > 0 && inputUser <= 11)
         {
             if(inputUser == 1)
             {
-                printAllData();
+                printDataForward();
             }
             else if(inputUser == 2)
+            {
+                printDataBackward();
+            }
+            else if(inputUser == 3)
             {
                 int id;
                 char* namaBarang = (char*) malloc(11 * sizeof(char));
@@ -443,10 +462,10 @@ int main()
                 scanf("%d", &jumlahBarang);
                 getchar();
     
-                addDataFromStart(id, namaBarang, hargaBarang, jumlahBarang);
+                addDataFromHead(id, namaBarang, hargaBarang, jumlahBarang);
                 free(namaBarang);
             }
-            else if(inputUser == 3)
+            else if(inputUser == 4)
             {
                 int id;
                 char* namaBarang = (char*) malloc(11 * sizeof(char));
@@ -470,7 +489,7 @@ int main()
                 addDataFromEnd(id, namaBarang, hargaBarang, jumlahBarang);
                 free(namaBarang);
             }
-            else if(inputUser == 4)
+            else if(inputUser == 5)
             {
                 int indexId;
                 int id;
@@ -498,15 +517,15 @@ int main()
                 addDataFromId(indexId, id, namaBarang, hargaBarang, jumlahBarang);
                 free(namaBarang);
             }
-            else if(inputUser == 5)
+            else if(inputUser == 6)
             {
                 editDataFromId();
             }
-            else if(inputUser == 6)
+            else if(inputUser == 7)
             {
                 editDataFromPosition();
             }
-            else if(inputUser == 7)
+            else if(inputUser == 8)
             {
                 int id;
 
@@ -514,7 +533,7 @@ int main()
                 scanf("%d", &id);
                 deleteFromId(id);
             }
-            else if(inputUser == 8)
+            else if(inputUser == 9)
             {
                 int position;
 
@@ -522,7 +541,7 @@ int main()
                 scanf("%d", &position);
                 deleteFromPosition(position);
             }
-            else if(inputUser == 9)
+            else if(inputUser == 10)
             {
                 int sortOption;
                 do
@@ -534,7 +553,7 @@ int main()
     
                 sortData(sortOption);
             }
-            else if(inputUser == 10)
+            else if(inputUser == 11)
             {
                 freeAllLinkedList();
                 printf("Selesai\n");

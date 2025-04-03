@@ -1,74 +1,83 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Stack
+typedef struct Queue
 {
-    int top;
+    int l;
+    int r;
     int array[10];
-} Stack;
+} Queue;
 
-Stack stack;
+Queue queue;
 
 void displayData()
-{
-    int n = sizeof(stack.array) / sizeof(stack.array[0]);
-    
-    printf("Top : %d\n", stack.top);
+{    
+    if (queue.l == queue.r) {
+        printf("Queue kosong\n");
+        return;
+    }    
+
+    printf("L : %d\n", queue.l);
+    printf("R : %d\n", queue.r);
     printf("Array : ");
-    for(int i = 0; i < n; i++)
+
+    int i = queue.l;
+
+    while(i != queue.r)
     {
-        printf("%d ", stack.array[i]);
+        printf("%d ", queue.array[i]);
+        i = (i + 1) % 10;
     }
-    
+    printf("\n");
 }
 
 void push(int value)
 {
-    if(stack.top == 10)
+    if((queue.r + 1) % 10 == queue.l)
     {
-        printf("Array sudah penuh\n");
+        printf("Queue penuh\n");
         return;
     }
-    stack.array[stack.top] = value;
-    stack.top += 1;
+
+    queue.array[queue.r] = value;
+    queue.r = (queue.r + 1) % 10;
 }
 
 void pop()
 {
-    if(stack.top == 0)
+    if(queue.l == queue.r)
     {
         printf("Array kosong\n");
         return;
     }
 
-    stack.top--;
-    stack.array[stack.top] = 0;
+    queue.l = (queue.l + 1) % 10;
+
 }
 
-void top()
+void front()
 {
-    if(stack.top == 0)
+    if(queue.l == queue.r)
     {
         printf("Array kosong\n");
         return;
     }
 
-    printf("Top : %d\n", stack.array[stack.top - 1]);
+    printf("Front : %d\n", queue.array[queue.l]);
 }
 
 void printMenu()
 {
     system("cls");
-    printf("            __                 __    \n");
-    printf("    _______/  |______    ____ |  | __\n");
-    printf("   /  ___/\\   __\\__  \\ _/ ___\\|  |/ /\n");
-    printf("   \\___ \\  |  |  / __ \\\\  \\___|    <  \n");
-    printf("  /____  > |__| (____  /\\___  >__|_ \\\n");
-    printf("       \\/            \\/     \\/     \\/\n");
+    printf("     ________ __   ____  __ __   ____  \n");
+    printf("    / ____/  |  \\_/ __ \\|  |  \\_/ __ \\ \n");
+    printf("   < <_|  |  |  /\\  ___/|  |  /\\  ___/ \n");
+    printf("    \\__   |____/  \\___  >____/  \\___  >\n");
+    printf("       |__|           \\/            \\/ \n");
     printf("1. Display all data\n");
     printf("2. Push\n");
     printf("3. Pop\n");
-    printf("4. Top\n");
+    printf("4. Front\n");
     printf("5. Selesai\n");
     printf("Pilihan anda : ");
 }
@@ -103,7 +112,7 @@ int main()
             }
             else if(inputUser == 4)
             {
-                top();
+                front();
             }
             else if(inputUser == 5)
             {

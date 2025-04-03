@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 typedef struct Queue
 {
@@ -40,7 +41,7 @@ void printMenu()
     printf("1. Display all data\n");
     printf("2. Push\n");
     printf("3. Pop\n");
-    printf("4. Top\n");
+    printf("4. Front\n");
     printf("5. Selesai\n");
     printf("Pilihan anda : ");
 }
